@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My AI Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 My AI Assistant</h1>
+    <p>Ask me anything!</p>
+
+    <div id="chat"></div>
+
+    <div class="input-area">
+        <input
+            id="question"
+            type="text"
+            placeholder="Ask your question..."
+        >
+
+        <button onclick="askAI()">Ask</button>
+    </div>
+
+</div>
+
+<script>
+
+async function askAI() {
+
+    let input = document.getElementById("question");
+    let question = input.value;
+
+    if (question === "") return;
+
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += `
+        <div class="user">
+            <b>You:</b> ${question}
+        </div>
+    `;
+
+    input.value = "";
+
+    let response = await fetch("/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            question: question
+        })
+    });
+
+    let data = await response.json();
+
+    chat.innerHTML += `
+        <div class="ai">
+            <b>AI:</b> ${data.answer}
+        </div>
+    `;
+}
+
+</script>
+
+</body>
+</html>
